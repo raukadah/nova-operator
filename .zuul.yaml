@@ -70,7 +70,7 @@
     dependencies: ["openstack-meta-content-provider"]
     post-run:
       - ci/nova-operator-base/playbooks/collect-logs.yaml
-    vars:
+    vars: &nova-operator-tempest-multinode-vars
       cifmw_extras:
         - "@scenarios/centos-9/multinode-ci.yml"
         - "@{{ ansible_user_dir }}/{{ zuul.projects['github.com/openstack-k8s-operators/nova-operator'].src_dir }}/ci/nova-operator-tempest-multinode/ci_fw_vars.yaml"
@@ -121,12 +121,27 @@
         [libvirt]
         cpu_mode = custom
         cpu_models = Nehalem
+
 - job:
-    name: nova-operator-cyborg-tempest-multinode
-    parent: nova-operator-tempest-multinode
+    name: nova-operator-tempest-multinode-centos-10
+    parent: podified-multinode-edpm-deployment-crc-3comp-centos-10
+    dependencies: ["openstack-meta-content-provider"]
+    post-run:
+      - ci/nova-operator-base/playbooks/collect-logs.yaml
+    vars:
+      <<: *nova-operator-tempest-multinode-vars
+      cifmw_extras:
+        - "@scenarios/centos-9/base.yml"
+        - "@scenarios/centos-10/multinode-ci.yml"
+        - "@{{ ansible_user_dir }}/{{ zuul.projects['github.com/openstack-k8s-operators/nova-operator'].src_dir }}/ci/nova-operator-tempest-multinode/ci_fw_vars.yaml"
+
+- job:
+    name: nova-operator-cyborg-tempest-multinode-centos-10
+    parent: nova-operator-tempest-multinode-centos-10
     vars:
       cifmw_extras:
-        - "@scenarios/centos-9/multinode-ci.yml"
+        - "@scenarios/centos-10/base.yml"
+        - "@scenarios/centos-10/multinode-ci.yml"
         - "@{{ ansible_user_dir }}/{{ zuul.projects['github.com/openstack-k8s-operators/nova-operator'].src_dir }}/ci/nova-operator-cyborg-tempest-multinode/ci_fw_vars.yaml"
       cifmw_update_containers_registry: quay.rdoproject.org
       cifmw_update_containers_org: podified-master-centos10

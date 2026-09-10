@@ -2,6 +2,7 @@
 cifmw_install_yamls_vars:
   BMO_SETUP: false
   INSTALL_CERT_MANAGER: false
+  CYBORG_PCI_SIM: true
 
 cifmw_edpm_prepare_skip_crc_storage_creation: true
 # as we scale the openstack services to 3 replicas we need more PVs
